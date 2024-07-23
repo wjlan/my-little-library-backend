@@ -28,5 +28,22 @@ public class BookService {
 
         bookRepository.save(book);
     }
+
+    public void updateBook(Long bookId, Book book) {
+        if (bookRepository.existsById(bookId)) {
+            book.setId(bookId);
+            bookRepository.save(book);
+        } else {
+            throw new RuntimeException("Book not found with ID " + bookId);
+        }
+    }
+
+    public void deleteBook(Long bookId) {
+        boolean exists = bookRepository.existsById(bookId);
+        if (!exists) {
+            throw new IllegalStateException("Book not found with ID " + bookId);
+        }
+        bookRepository.deleteById(bookId);
+    }
 }
 

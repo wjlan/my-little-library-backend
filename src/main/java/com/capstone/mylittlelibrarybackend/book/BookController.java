@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 @RestController
 @RequestMapping(path = "api/books")
 public class BookController {
@@ -16,12 +17,23 @@ public class BookController {
     }
 
     @GetMapping
-    public List<Book> getBooks(){
+    public List<Book> getBooks() {
         return bookService.getBooks();
     }
 
     @PostMapping
-    public void  addNewBook(@RequestBody Book book){
+    public void addNewBook(@RequestBody Book book) {
         bookService.addNewBook(book);
     }
+
+    @PutMapping(path = "/{bookId}")
+    public void updateBook(@PathVariable("bookId") Long bookId, @RequestBody Book book) {
+        bookService.updateBook(bookId, book);
+    }
+
+    @DeleteMapping(path = "/{bookId}")
+    public void deleteBook(@PathVariable("bookId") Long bookId) {
+        bookService.deleteBook(bookId);
+    }
+
 }

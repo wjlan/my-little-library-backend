@@ -2,8 +2,10 @@ package com.capstone.mylittlelibrarybackend.book;
 
 import jakarta.persistence.*;
 
+import java.util.Arrays;
+
 @Entity
-@Table(name = "book")
+@Table(name = "books")
 public class Book {
 
     @Id
@@ -24,14 +26,15 @@ public class Book {
     private Integer publishedYear;
     private String description;
     private String language;
-    private String image;
 
-    // Default constructor
-    public Book() {
-    }
+    @Lob
+    private byte[] image;
 
-    // Constructor with all fields
-    public Book(long id, String title, String author, String genre, Integer publishedYear, String description, String language) {
+    // Constructors, getters, and setters
+
+    public Book() {}
+
+    public Book(long id, String title, String author, String genre, Integer publishedYear, String description, String language, byte[] image) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -42,8 +45,7 @@ public class Book {
         this.image = image;
     }
 
-    // Constructor without id
-    public Book(String title, String author, String genre, Integer publishedYear, String description, String language) {
+    public Book(String title, String author, String genre, Integer publishedYear, String description, String language, byte[] image) {
         this.title = title;
         this.author = author;
         this.genre = genre;
@@ -53,7 +55,8 @@ public class Book {
         this.image = image;
     }
 
-    // Getters and Setters
+    // Getters and setters
+
     public long getId() {
         return id;
     }
@@ -110,11 +113,25 @@ public class Book {
         this.language = language;
     }
 
-    public String getImageUrl() {
+    public byte[] getImage() {
         return image;
     }
 
-    public void setImageUrl(String image) {
+    public void setImage(byte[] image) {
         this.image = image;
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", author='" + author + '\'' +
+                ", genre='" + genre + '\'' +
+                ", publishedYear=" + publishedYear +
+                ", description='" + description + '\'' +
+                ", language='" + language + '\'' +
+                ", image=" + Arrays.toString(image) +
+                '}';
     }
 }
