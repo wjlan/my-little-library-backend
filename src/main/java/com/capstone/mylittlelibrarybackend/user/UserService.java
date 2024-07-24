@@ -1,5 +1,6 @@
 package com.capstone.mylittlelibrarybackend.user;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -7,15 +8,14 @@ import java.util.List;
 @Service
 public class UserService {
 
+    private final UserRepository userRepository;
+
+    @Autowired
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
     public List<User> getUsers() {
-        return List.of (
-                new User(
-                        1L,
-                        "wj",
-                        "Lan",
-                        "123456@gmail.com",
-                        "123456"
-                )
-        );
+        return userRepository.findAll();
     }
 }
