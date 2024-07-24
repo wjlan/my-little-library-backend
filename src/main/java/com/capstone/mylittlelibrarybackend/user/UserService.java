@@ -1,7 +1,9 @@
 package com.capstone.mylittlelibrarybackend.user;
 
+import com.capstone.mylittlelibrarybackend.book.Book;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +29,15 @@ public class UserService {
             throw new IllegalStateException("email taken");
         }
         userRepository.save(user);
+    }
+
+    public void updateUser(Long userId, User user) {
+        if (userRepository.existsById(userId)) {
+            user.setId(userId);
+            userRepository.save(user);
+        } else {
+            throw new RuntimeException("user with id " + userId + " does not exists");
+        }
     }
 
     public void deleteUser(Long userId) {
