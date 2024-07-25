@@ -21,6 +21,11 @@ public class BookController {
         return bookService.getBooks();
     }
 
+    @GetMapping(path = "/search")
+    public List<Book> searchBook(@RequestParam("title") String title) {
+        return bookService.searchBook(title);
+    }
+
     @PostMapping
     public void addNewBook(@RequestBody Book book) {
         bookService.addNewBook(book);
