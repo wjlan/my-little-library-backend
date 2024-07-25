@@ -19,6 +19,11 @@ public class BookService {
         return bookRepository.findAll();
     }
 
+    public Book getBookById(Long bookId) {
+        return bookRepository.findById(bookId)
+                .orElseThrow(() -> new RuntimeException("Book not found with ID " + bookId));
+    }
+
     public void addNewBook(Book book) {
         Optional<Book> bookOptional = bookRepository.findBookByTitle(book.getTitle());
         bookRepository.findBookByTitle(book.getTitle());
