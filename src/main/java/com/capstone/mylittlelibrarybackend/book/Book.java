@@ -23,7 +23,7 @@ public class Book {
     private String title;
     private String author;
     private String genre;
-    private Integer publishedYear;
+    private String publishedYear;
     private String description;
     private String language;
 
@@ -32,9 +32,10 @@ public class Book {
 
     // Constructors, getters, and setters
 
-    public Book() {}
+    public Book() {
+    }
 
-    public Book(long id, String title, String author, String genre, Integer publishedYear, String description, String language, byte[] image) {
+    public Book(long id, String title, String author, String genre, String publishedYear, String description, String language, byte[] image) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -45,7 +46,7 @@ public class Book {
         this.image = image;
     }
 
-    public Book(String title, String author, String genre, Integer publishedYear, String description, String language, byte[] image) {
+    public Book(String title, String author, String genre, String publishedYear, String description, String language, byte[] image) {
         this.title = title;
         this.author = author;
         this.genre = genre;
@@ -89,11 +90,11 @@ public class Book {
         this.genre = genre;
     }
 
-    public Integer getPublishedYear() {
+    public String getPublishedYear() {
         return publishedYear;
     }
 
-    public void setPublishedYear(Integer publishedYear) {
+    public void setPublishedYear(String publishedYear) {
         this.publishedYear = publishedYear;
     }
 
