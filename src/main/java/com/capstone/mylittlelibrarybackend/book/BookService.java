@@ -45,5 +45,9 @@ public class BookService {
         }
         bookRepository.deleteById(bookId);
     }
+
+    public List<Book> searchBook(String title) {
+        return bookRepository.findBooksByTitleContaining(title);
+    }
 }
 
