@@ -19,11 +19,23 @@ public class BookService {
         return bookRepository.findAll();
     }
 
+    public Book getBookById(Long bookId) {
+        return bookRepository.findById(bookId)
+                .orElseThrow(() -> new RuntimeException("Book not found with ID " + bookId));
+    }
+
     public void addNewBook(Book book) {
-        Optional<Book> bookOptional = bookRepository.findBookByTitle(book.getTitle());
-        bookRepository.findBookByTitle(book.getTitle());
-        if (bookOptional.isPresent()) {
-            throw new IllegalStateException("Book already exists");
+        List<Book> existingBooks = bookRepository.findBooksByTitleContaining(book.getTitle());
+
+        for (Book existingBook : existingBooks) {
+            if (existingBook.getAuthor().equals(book.getAuthor()) &&
+                    existingBook.getGenre().equals(book.getGenre()) &&
+                    existingBook.getPublishedYear().equals(book.getPublishedYear()) &&
+                    existingBook.getDescription().equals(book.getDescription()) &&
+                    existingBook.getLanguage().equals(book.getLanguage())) {
+
+                throw new IllegalStateException("Duplicate book already exists");
+            }
         }
 
         bookRepository.save(book);
@@ -44,6 +56,10 @@ public class BookService {
             throw new IllegalStateException("Book not found with ID " + bookId);
         }
         bookRepository.deleteById(bookId);
+    }
+
+    public List<Book> searchBook(String title) {
+        return bookRepository.findBooksByTitleContaining(title);
     }
 }
 
