@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/chat")
 public class OpenAiApiController {
 
     @Value("${openai.model}")
@@ -21,7 +21,7 @@ public class OpenAiApiController {
     @Autowired
     private RestTemplate template;
 
-    @GetMapping(path = "/chat")
+    @GetMapping
     public String chat(@RequestParam(value = "prompt", defaultValue = "") String prompt){
         if (prompt.isEmpty()) {
             return "Prompt is required";
