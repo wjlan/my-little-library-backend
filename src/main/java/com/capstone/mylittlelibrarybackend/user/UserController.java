@@ -1,13 +1,12 @@
 package com.capstone.mylittlelibrarybackend.user;
 
-import com.capstone.mylittlelibrarybackend.book.Book;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping(path="api/v1/user")
+@RequestMapping(path="api/users")
 public class UserController {
 
     private final UserService userService;
