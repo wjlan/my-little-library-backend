@@ -18,7 +18,7 @@ public class Book {
             strategy = GenerationType.SEQUENCE,
             generator = "book_sequence"
     )
-    private long id;
+    private Long id;
 
     private String title;
     private String author;
@@ -35,17 +35,6 @@ public class Book {
     public Book() {
     }
 
-    public Book(long id, String title, String author, String genre, String publishedYear, String description, String language, byte[] image) {
-        this.id = id;
-        this.title = title;
-        this.author = author;
-        this.genre = genre;
-        this.publishedYear = publishedYear;
-        this.description = description;
-        this.language = language;
-        this.image = image;
-    }
-
     public Book(String title, String author, String genre, String publishedYear, String description, String language, byte[] image) {
         this.title = title;
         this.author = author;
@@ -57,12 +46,11 @@ public class Book {
     }
 
     // Getters and setters
-
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -129,7 +117,7 @@ public class Book {
                 ", title='" + title + '\'' +
                 ", author='" + author + '\'' +
                 ", genre='" + genre + '\'' +
-                ", publishedYear=" + publishedYear +
+                ", publishedYear='" + publishedYear + '\'' +
                 ", description='" + description + '\'' +
                 ", language='" + language + '\'' +
                 ", image=" + Arrays.toString(image) +

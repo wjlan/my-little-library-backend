@@ -3,7 +3,7 @@ package com.capstone.mylittlelibrarybackend;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.capstone.mylittlelibrarybackend")
 public class MyLittleLibraryBackendApplication {
 
     public static void main(String[] args) {
