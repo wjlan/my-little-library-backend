@@ -2,8 +2,6 @@ package com.capstone.mylittlelibrarybackend.book;
 
 import jakarta.persistence.*;
 
-import java.util.Arrays;
-
 @Entity
 @Table(name = "books")
 public class Book {
@@ -26,16 +24,14 @@ public class Book {
     private String publishedYear;
     private String description;
     private String language;
-
-    @Lob
-    private byte[] image;
+    private String image;
 
     // Constructors, getters, and setters
 
     public Book() {
     }
 
-    public Book(String title, String author, String genre, String publishedYear, String description, String language, byte[] image) {
+    public Book(String title, String author, String genre, String publishedYear, String description, String language, String image) {
         this.title = title;
         this.author = author;
         this.genre = genre;
@@ -102,11 +98,11 @@ public class Book {
         this.language = language;
     }
 
-    public byte[] getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(byte[] image) {
+    public void setImage(String image) {
         this.image = image;
     }
 
@@ -120,7 +116,7 @@ public class Book {
                 ", publishedYear='" + publishedYear + '\'' +
                 ", description='" + description + '\'' +
                 ", language='" + language + '\'' +
-                ", image=" + Arrays.toString(image) +
+                ", image='" + image + '\'' +
                 '}';
     }
 }
