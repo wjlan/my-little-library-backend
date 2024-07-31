@@ -3,11 +3,8 @@ package com.capstone.mylittlelibrarybackend.bookTest;
 import static org.assertj.core.api.Assertions.assertThat;
 import com.capstone.mylittlelibrarybackend.book.Book;
 import org.junit.jupiter.api.Test;
-import java.util.Arrays;
 
 public class BookTestUnit {
-
-    private Book book;
 
     @Test
     public void testBookConstructorAndGetters() {
@@ -18,7 +15,7 @@ public class BookTestUnit {
         String publishedYear = "2024";
         String description = "Test Description";
         String language = "English";
-        byte[] image = {1, 2, 3, 4, 5};
+        String image = null;
 
         // Act
         Book book = new Book(title, author, genre, publishedYear, description, language, image);
@@ -30,7 +27,7 @@ public class BookTestUnit {
         assertThat(book.getPublishedYear()).isEqualTo(publishedYear);
         assertThat(book.getDescription()).isEqualTo(description);
         assertThat(book.getLanguage()).isEqualTo(language);
-        assertThat(book.getImage()).isEqualTo(image);
+        assertThat(book.getImage()).isNull(); // More idiomatic
     }
 
     @Test
@@ -43,7 +40,7 @@ public class BookTestUnit {
         String publishedYear = "2023";
         String description = "Another Description";
         String language = "French";
-        byte[] image = {10, 20, 30};
+        String image = null;
 
         // Act
         book.setTitle(title);
@@ -61,9 +58,10 @@ public class BookTestUnit {
         assertThat(book.getPublishedYear()).isEqualTo(publishedYear);
         assertThat(book.getDescription()).isEqualTo(description);
         assertThat(book.getLanguage()).isEqualTo(language);
-        assertThat(book.getImage()).isEqualTo(image);
+        assertThat(book.getImage()).isNull(); // More idiomatic
     }
 
+    @Test
     public void testToString() {
         // Arrange
         String title = "Test Title";
@@ -72,7 +70,7 @@ public class BookTestUnit {
         String publishedYear = "2024";
         String description = "Test Description";
         String language = "English";
-        byte[] image = {1, 2, 3, 4, 5};
+        String image = null;
 
         Book book = new Book(title, author, genre, publishedYear, description, language, image);
 
@@ -88,7 +86,6 @@ public class BookTestUnit {
         assertThat(toStringResult).contains("publishedYear='" + publishedYear + "'");
         assertThat(toStringResult).contains("description='" + description + "'");
         assertThat(toStringResult).contains("language='" + language + "'");
-        assertThat(toStringResult).contains("image=" + Arrays.toString(image));
+        assertThat(toStringResult).contains("image='null'");
     }
-
 }
