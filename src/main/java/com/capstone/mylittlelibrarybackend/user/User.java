@@ -1,6 +1,10 @@
 package com.capstone.mylittlelibrarybackend.user;
 
+import com.capstone.mylittlelibrarybackend.book.Book;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -20,6 +24,9 @@ public class User {
     private String lastName;
     private String email;
     private String password;
+
+    @OneToMany(mappedBy = "user")
+    private List<Book> books = new ArrayList<>();
 
     public User() {
     }
@@ -84,6 +91,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<Book> getBooks() {
+        return books;
+    }
+
+    public void setBooks(List<Book> books) {
+        this.books = books;
     }
 
     @Override

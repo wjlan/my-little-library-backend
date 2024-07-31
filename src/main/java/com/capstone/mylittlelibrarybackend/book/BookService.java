@@ -1,5 +1,7 @@
 package com.capstone.mylittlelibrarybackend.book;
 
+import com.capstone.mylittlelibrarybackend.user.User;
+import com.capstone.mylittlelibrarybackend.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -9,14 +11,16 @@ import java.util.Optional;
 public class BookService {
 
     private final BookRepository bookRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public BookService(BookRepository bookRepository) {
+    public BookService(BookRepository bookRepository, UserRepository userRepository) {
         this.bookRepository = bookRepository;
+        this.userRepository = userRepository;
     }
 
-    public List<Book> getBooks(){
-        return bookRepository.findAll();
+    public List<Book> getBooks(Long userId){
+        return bookRepository.findBooksByUserId(userId);
     }
 
     public Book getBookById(Long bookId) {
@@ -24,20 +28,16 @@ public class BookService {
                 .orElseThrow(() -> new RuntimeException("Book not found with ID " + bookId));
     }
 
-    public void addNewBook(Book book) {
-        List<Book> existingBooks = bookRepository.findBooksByTitleContaining(book.getTitle());
+    public void addNewBook(Long userId, Book book) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with ID " + userId));
 
-        for (Book existingBook : existingBooks) {
-            if (existingBook.getAuthor().equals(book.getAuthor()) &&
-                    existingBook.getGenre().equals(book.getGenre()) &&
-                    existingBook.getPublishedYear().equals(book.getPublishedYear()) &&
-                    existingBook.getDescription().equals(book.getDescription()) &&
-                    existingBook.getLanguage().equals(book.getLanguage())) {
-
-                throw new IllegalStateException("Duplicate book already exists");
-            }
+        Optional<Book> bookOptional = bookRepository.findBookByUserIdAndTitle(userId, book.getTitle());
+        if (bookOptional.isPresent()) {
+            throw new IllegalStateException("Book with the same title already exists for this user");
         }
 
+        book.setUser(user);
         bookRepository.save(book);
     }
 

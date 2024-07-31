@@ -1,5 +1,6 @@
 package com.capstone.mylittlelibrarybackend.book;
 
+import com.capstone.mylittlelibrarybackend.user.User;
 import jakarta.persistence.*;
 
 import java.util.Arrays;
@@ -29,6 +30,10 @@ public class Book {
 
     @Lob
     private byte[] image;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     // Constructors, getters, and setters
 
@@ -108,6 +113,14 @@ public class Book {
 
     public void setImage(byte[] image) {
         this.image = image;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override
