@@ -2,6 +2,8 @@ package com.capstone.mylittlelibrarybackend.book;
 
 import com.capstone.mylittlelibrarybackend.imageupload.UploadImage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,18 +39,34 @@ public class BookController {
     }
 
     @PostMapping
-    public void addNewBook(@RequestParam("title") String title,
-                           @RequestParam("author") String author,
-                           @RequestParam("genre") String genre,
-                           @RequestParam("publishedYear") String publishedYear,
-                           @RequestParam("description") String description,
-                           @RequestParam("language") String language,
-                           @RequestParam(value = "image", required = false) MultipartFile image) throws IOException {
-        String imagePath = (image != null && !image.isEmpty()) ? String.valueOf(uploadImage.uploadImage(image)) : null;
+    public ResponseEntity<String> addNewBook(@RequestParam("title") String title,
+                                             @RequestParam("author") String author,
+                                             @RequestParam("genre") String genre,
+                                             @RequestParam("publishedYear") String publishedYear,
+                                             @RequestParam("description") String description,
+                                             @RequestParam("language") String language,
+                                             @RequestParam(value = "image", required = false) MultipartFile image) {
+        try {
+            String imagePath = null;
+            if (image != null && !image.isEmpty()) {
+                imagePath = uploadImage.uploadImage(image);
+            }
 
-        Book book = new Book(title, author, genre, publishedYear, description, language, imagePath);
-        bookService.addNewBook(book);
+            Book book = new Book(title, author, genre, publishedYear, description, language, imagePath);
+            bookService.addNewBook(book);
+
+            return ResponseEntity.ok("Book added successfully");
+        } catch (IOException e) {
+            // Handle exceptions related to image upload
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to upload image: " + e.getMessage());
+        } catch (Exception e) {
+            // Handle other potential exceptions
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to add book: " + e.getMessage());
+        }
     }
+
 
     @PutMapping(path = "/{bookId}")
     public void updateBook(@PathVariable("bookId") Long bookId,
