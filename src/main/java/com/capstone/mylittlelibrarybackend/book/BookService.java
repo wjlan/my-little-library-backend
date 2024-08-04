@@ -1,9 +1,10 @@
 package com.capstone.mylittlelibrarybackend.book;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class BookService {
@@ -15,7 +16,7 @@ public class BookService {
         this.bookRepository = bookRepository;
     }
 
-    public List<Book> getBooks(){
+    public List<Book> getBooks() {
         return bookRepository.findAll();
     }
 
@@ -25,20 +26,24 @@ public class BookService {
     }
 
     public void addNewBook(Book book) {
-        List<Book> existingBooks = bookRepository.findBooksByTitleContaining(book.getTitle());
+        // Check for duplicates
+        List<Book> existingBooks = bookRepository.searchBooks(
+                book.getTitle(),
+                book.getAuthor(),
+                book.getGenre(),
+                book.getLanguage()
+        );
 
-        for (Book existingBook : existingBooks) {
-            if (existingBook.getAuthor().equals(book.getAuthor()) &&
-                    existingBook.getGenre().equals(book.getGenre()) &&
-                    existingBook.getPublishedYear().equals(book.getPublishedYear()) &&
-                    existingBook.getDescription().equals(book.getDescription()) &&
-                    existingBook.getLanguage().equals(book.getLanguage())) {
-
-                throw new IllegalStateException("Duplicate book already exists");
-            }
+        if (!existingBooks.isEmpty()) {
+            throw new IllegalStateException("A book with the same title, author, genre, and language already exists.");
         }
 
-        bookRepository.save(book);
+        // Save the new book if no duplicates are found
+        try {
+            bookRepository.save(book);
+        } catch (DataIntegrityViolationException e) {
+            throw new IllegalStateException("Error occurred while adding the book: " + e.getMessage(), e);
+        }
     }
 
     public void updateBook(Long bookId, Book book) {
@@ -58,8 +63,12 @@ public class BookService {
         bookRepository.deleteById(bookId);
     }
 
-    public List<Book> searchBook(String title) {
-        return bookRepository.findBooksByTitleContaining(title);
+    public List<Book> searchBooks(String title, String author, String genre, String language) {
+        return bookRepository.searchBooks(
+                title.isEmpty() ? null : title,
+                author.isEmpty() ? null : author,
+                genre.isEmpty() ? null : genre,
+                language.isEmpty() ? null : language
+        );
     }
 }
-
