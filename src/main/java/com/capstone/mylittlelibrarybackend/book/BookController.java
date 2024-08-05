@@ -34,8 +34,14 @@ public class BookController {
     }
 
     @GetMapping(path = "/search")
-    public List<Book> searchBook(@RequestParam("title") String title) {
-        return bookService.searchBook(title);
+    public ResponseEntity<List<Book>> searchBooks(
+            @RequestParam(value = "title", defaultValue = "") String title,
+            @RequestParam(value = "author", defaultValue = "") String author,
+            @RequestParam(value = "genre", defaultValue = "") String genre,
+            @RequestParam(value = "language", defaultValue = "") String language
+    ) {
+        List<Book> books = bookService.searchBooks(title, author, genre, language);
+        return ResponseEntity.ok(books);
     }
 
     @PostMapping
@@ -56,12 +62,12 @@ public class BookController {
             bookService.addNewBook(book);
 
             return ResponseEntity.ok("Book added successfully");
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (IOException e) {
-            // Handle exceptions related to image upload
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Failed to upload image: " + e.getMessage());
         } catch (Exception e) {
-            // Handle other potential exceptions
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Failed to add book: " + e.getMessage());
         }
@@ -69,33 +75,51 @@ public class BookController {
 
 
     @PutMapping(path = "/{bookId}")
-    public void updateBook(@PathVariable("bookId") Long bookId,
-                           @RequestParam("title") String title,
-                           @RequestParam("author") String author,
-                           @RequestParam("genre") String genre,
-                           @RequestParam("publishedYear") String publishedYear,
-                           @RequestParam("description") String description,
-                           @RequestParam("language") String language,
-                           @RequestParam(value = "image", required = false) MultipartFile image) throws IOException {
-        Book existingBook = bookService.getBookById(bookId);
-        if (image != null && !image.isEmpty()) {
-            String imagePath = String.valueOf(uploadImage.uploadImage(image));
-            existingBook.setImage(imagePath);
+    public ResponseEntity<String> updateBook(@PathVariable("bookId") Long bookId,
+                                             @RequestParam("title") String title,
+                                             @RequestParam("author") String author,
+                                             @RequestParam("genre") String genre,
+                                             @RequestParam("publishedYear") String publishedYear,
+                                             @RequestParam("description") String description,
+                                             @RequestParam("language") String language,
+                                             @RequestParam(value = "image", required = false) MultipartFile image) throws IOException {
+        try {
+            Book existingBook = bookService.getBookById(bookId);
+            if (image != null && !image.isEmpty()) {
+                String imagePath = uploadImage.uploadImage(image);
+                existingBook.setImage(imagePath);
+            }
+
+            existingBook.setTitle(title);
+            existingBook.setAuthor(author);
+            existingBook.setGenre(genre);
+            existingBook.setPublishedYear(publishedYear);
+            existingBook.setDescription(description);
+            existingBook.setLanguage(language);
+
+            bookService.updateBook(bookId, existingBook);
+
+            return ResponseEntity.ok("Book successfully updated");
+        } catch (IOException e) {
+            // Handle exceptions related to image upload
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to upload image: " + e.getMessage());
+        } catch (Exception e) {
+            // Handle other potential exceptions
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to update book: " + e.getMessage());
         }
-
-        existingBook.setTitle(title);
-        existingBook.setAuthor(author);
-        existingBook.setGenre(genre);
-        existingBook.setPublishedYear(publishedYear);
-        existingBook.setDescription(description);
-        existingBook.setLanguage(language);
-
-        bookService.updateBook(bookId, existingBook);
     }
 
     @DeleteMapping(path = "/{bookId}")
-    public void deleteBook(@PathVariable("bookId") Long bookId) {
-        bookService.deleteBook(bookId);
+    public ResponseEntity<String> deleteBook(@PathVariable("bookId") Long bookId) {
+        try {
+            bookService.deleteBook(bookId);
+            return ResponseEntity.ok("Book successfully deleted");
+        } catch (Exception e) {
+            // Handle exceptions related to book deletion
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to delete book: " + e.getMessage());
+        }
     }
-
 }

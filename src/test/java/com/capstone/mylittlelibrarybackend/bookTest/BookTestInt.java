@@ -46,28 +46,28 @@ public class BookTestInt {
     }
 
     @Test
-    public void testSearchBook() {
+    public void testSearchBooks_Title() {
         // Arrange
-        Book book = new Book( "Title1", "Author1", "Genre1", "2020", "Description1", "Language1", null);
-        when(bookRepository.findBooksByTitleContaining(anyString())).thenReturn(List.of(book));
+        Book book = new Book("Title1", "Author1", "Genre1", "2020", "Description1", "Language1", null);
+        when(bookRepository.searchBooks("Title1", null, null, null)).thenReturn(List.of(book));
 
         // Act
-        List<Book> result = bookService.searchBook("Title1");
+        List<Book> result = bookService.searchBooks("Title1", "", "", "");
 
         // Assert
         assertEquals(1, result.size());
         assertEquals("Title1", result.get(0).getTitle());
-        verify(bookRepository, times(1)).findBooksByTitleContaining("Title1");
+        verify(bookRepository, times(1)).searchBooks("Title1", null, null, null);
     }
 
     @Test
     public void testAddNewBook_DuplicateBook() {
         // Arrange
-        Book book = new Book("Title1",  "Author1", "Genre1", "2020", "Description1", "Language1", null);
-        when(bookRepository.findBooksByTitleContaining(anyString())).thenReturn(List.of(book));
+        Book existingBook = new Book("Title1", "Author1", "Genre1", "2020", "Description1", "Language1", null);
+        when(bookRepository.searchBooks("Title1", "Author1", "Genre1", "Language1")).thenReturn(List.of(existingBook));
 
         // Act & Assert
-        assertThrows(IllegalStateException.class, () -> bookService.addNewBook(book));
+        assertThrows(IllegalStateException.class, () -> bookService.addNewBook(existingBook));
         verify(bookRepository, never()).save(any(Book.class));
     }
 
