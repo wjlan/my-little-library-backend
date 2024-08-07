@@ -15,11 +15,13 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             "(:title IS NULL OR b.title LIKE %:title%) AND " +
             "(:author IS NULL OR b.author LIKE %:author%) AND " +
             "(:genre IS NULL OR b.genre LIKE %:genre%) AND " +
-            "(:language IS NULL OR b.language LIKE %:language%)")
+            "(:language IS NULL OR b.language LIKE %:language%) AND " +
+            "b.user.id = :userId")
     List<Book> searchBooks(
             @Param("title") String title,
             @Param("author") String author,
             @Param("genre") String genre,
-            @Param("language") String language
+            @Param("language") String language,
+            @Param("userId") Long userId
     );
 }

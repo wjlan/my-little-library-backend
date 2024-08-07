@@ -1,5 +1,6 @@
 package com.capstone.mylittlelibrarybackend.user;
 
+import com.capstone.mylittlelibrarybackend.book.Book;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -34,6 +36,12 @@ public class User implements UserDetails {
     private Boolean locked = false;
     private Boolean enabled = false;
 
+    @OneToMany(mappedBy = "user")
+    private List<Book> books = new ArrayList<>();
+
+    public User() {
+    }
+
     public User(String firstName, String lastName, String email, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -41,12 +49,18 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
+    public List<Book> getBooks() {
+        return books;
+    }
+
+    public void setBooks(List<Book> books) {
+        this.books = books;
+    }
 
     @Override
     public String getPassword() {
@@ -72,40 +86,5 @@ public class User implements UserDetails {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return !locked;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public User() {
-    }
-
-    public User(Long id,
-                String firstName,
-                String lastName,
-                String email,
-                String password) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = password;
     }
 }

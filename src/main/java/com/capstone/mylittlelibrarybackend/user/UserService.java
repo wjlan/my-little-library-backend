@@ -3,6 +3,7 @@ package com.capstone.mylittlelibrarybackend.user;
 import com.capstone.mylittlelibrarybackend.registration.token.ConfirmationToken;
 import com.capstone.mylittlelibrarybackend.registration.token.ConfirmationTokenRepository;
 import com.capstone.mylittlelibrarybackend.registration.token.ConfirmationTokenService;
+import com.capstone.mylittlelibrarybackend.security.UserPrincipal;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -25,9 +26,10 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return userRepository.findUserByEmail(email)
+        User user = userRepository.findUserByEmail(email)
                 .orElseThrow(() ->
                         new UsernameNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, email)));
+        return UserPrincipal.create(user);
     }
 
     public String signUpUser(User user) {

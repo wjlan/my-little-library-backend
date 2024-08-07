@@ -1,5 +1,7 @@
 package com.capstone.mylittlelibrarybackend.book;
 
+import com.capstone.mylittlelibrarybackend.user.User;
+import com.capstone.mylittlelibrarybackend.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -10,14 +12,17 @@ import java.util.List;
 public class BookService {
 
     private final BookRepository bookRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public BookService(BookRepository bookRepository) {
+    public BookService(BookRepository bookRepository, UserRepository userRepository) {
         this.bookRepository = bookRepository;
+        this.userRepository = userRepository;
     }
 
-    public List<Book> getBooks() {
-        return bookRepository.findAll();
+    public List<Book> getBooks(long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalStateException("user does not exist"));
+        return user.getBooks();
     }
 
     public Book getBookById(Long bookId) {
@@ -31,7 +36,8 @@ public class BookService {
                 book.getTitle(),
                 book.getAuthor(),
                 book.getGenre(),
-                book.getLanguage()
+                book.getLanguage(),
+                book.getUser().getId()
         );
 
         if (!existingBooks.isEmpty()) {
@@ -63,12 +69,13 @@ public class BookService {
         bookRepository.deleteById(bookId);
     }
 
-    public List<Book> searchBooks(String title, String author, String genre, String language) {
+    public List<Book> searchBooks(String title, String author, String genre, String language, Long userId) {
         return bookRepository.searchBooks(
                 title.isEmpty() ? null : title,
                 author.isEmpty() ? null : author,
                 genre.isEmpty() ? null : genre,
-                language.isEmpty() ? null : language
+                language.isEmpty() ? null : language,
+                userId
         );
     }
 }

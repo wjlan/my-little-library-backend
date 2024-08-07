@@ -1,5 +1,6 @@
 package com.capstone.mylittlelibrarybackend.book;
 
+import com.capstone.mylittlelibrarybackend.user.User;
 import jakarta.persistence.*;
 
 @Entity
@@ -26,12 +27,16 @@ public class Book {
     private String language;
     private String image;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     // Constructors, getters, and setters
 
     public Book() {
     }
 
-    public Book(String title, String author, String genre, String publishedYear, String description, String language, String image) {
+    public Book(String title, String author, String genre, String publishedYear, String description, String language, String image, User user) {
         this.title = title;
         this.author = author;
         this.genre = genre;
@@ -39,6 +44,7 @@ public class Book {
         this.description = description;
         this.language = language;
         this.image = image;
+        this.user = user;
     }
 
     // Getters and setters
@@ -104,6 +110,14 @@ public class Book {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override
